@@ -112,23 +112,33 @@
         const tableHead = document.getElementById("table-head");
         const tableBody = document.getElementById("table-body");
 
+        const medalEmoji = ["🥇", "🥈", "🥉"];
+
+        // Build table header, excluding 'id'
         tableHead.innerHTML = "";
-        Object.keys(data[0]).forEach(col => {
+        const headers = Object.keys(data[0]).filter(col => col !== "id");
+        headers.forEach(col => {
           let th = document.createElement("th");
           th.textContent = col.charAt(0).toUpperCase() + col.slice(1);
           tableHead.appendChild(th);
         });
 
+        // Build table body
         tableBody.innerHTML = "";
-        data.forEach(row => {
+        data.forEach((row, index) => {
           let tr = document.createElement("tr");
-          Object.entries(row).forEach(([col, value]) => {
+          headers.forEach(col => {
             let td = document.createElement("td");
-            if (col === "revenue" && typeof value === "number") {
-              td.textContent = `£${value.toFixed(2)}`; // pound symbol + 2 decimals
+            let value = row[col];
+
+            if (col === "name") {
+              td.innerHTML = `<strong>${index < 3 ? medalEmoji[index] + ' ' : ''}${value}</strong>`;
+            } else if (col === "revenue" && typeof value === "number") {
+              td.textContent = `£${value.toFixed(2)}`;
             } else {
               td.textContent = value;
             }
+
             tr.appendChild(td);
           });
           tableBody.appendChild(tr);
